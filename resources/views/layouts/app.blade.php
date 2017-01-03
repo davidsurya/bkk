@@ -28,7 +28,9 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
+@if(Auth::check())
 <body class="skin-blue {{ Auth::user()->is('Admin')? "fixed":"sidebar-collapse" }}">
+@endif
 <div class="wrapper">
 
     @include('layouts.partials.mainheader')

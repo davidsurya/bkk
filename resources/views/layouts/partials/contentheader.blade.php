@@ -1,4 +1,7 @@
 <!-- Content Header (Page header) -->
+@if(!isset($url))
+    <?php $url = ''; ?>
+@endif
 <section class="content-header">
     <h1>
         @yield('contentheader_title', 'Page Header here')
