@@ -79,7 +79,14 @@
 				<center><h4><b>Riwayat Pendidikan Formal</b></h4></center><br>
 				{!! Form::open(['method' => 'PUT', 'url' => '/alumni/updatecv']) !!}
 				<div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-2" id="track_education">
-					@include('user.partials.education')
+					@if(!is_null($educations))
+					@foreach($educations as $education)
+						@include('user.partials.education')					
+					@endforeach
+						@include('user.partials.education2')
+					@else
+						@include('user.partials.education2')													
+					@endif					
 				</div>
 
 				<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-lg-offset-2" id="job_record">
@@ -139,6 +146,21 @@
 		</div>
 	</div>
 </div>
+
+<div id="progress" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" style="padding-top:15%;">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Loading</span></h4>
+			</div>
+			<div class="register-box-body">
+				<div class="modal-body">
+					<div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>
 @stop
 
 @section('scripts')
@@ -150,7 +172,11 @@
 <script type="text/javascript" charset="utf8" src="{{ asset('/js/toastr.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('/js/flatpickr.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('/js/flatpickr.l10n.id.min.js') }}"></script>
-<script type="text/javascript">		
+<script type="text/javascript">
+	$.ajaxSetup({ headers: { 'X-CSRF-TOKEN' : '{{ csrf_token() }}' } });
+
+	var baru = '<div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control level" placeholder="Tingkat" name="level" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-4 col-md-3 col-lg-3"> <input type="text" class="form-control institute" placeholder="Nama Instansi" name="institute[]" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control entrance" placeholder="Tahun Masuk" name="entrance[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun masuk</i></span> </div> <div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control graduate" placeholder="Tahun Lulus" name="graduate[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun lulus</i></span> </div> <div class="form-group col-xs-12 col-sm-1 col-md-1 col-lg-1"> <button type="button" class="form-control btn btn-primary btn-flat btnsekolah"><i class="fa fa-plus"></i> </button> <span class="help-block hidden-md hidden-lg"><i><br></i></span> </div> <div class="hidden-xs col-sm-1 col-md-2 col-lg-2"> <span class="form-control" style="border: none;"></span> <span class="help-block"><br></span> </div>';
+
 	$('#image').change(function(){
 		var reader = new FileReader();			
 
@@ -180,11 +206,7 @@
 		$('#offsetY').val($('#photo').position().top);		
 	});
 	$('#graduation option:first').attr('disabled', true);
-
-	$(".btnsekolah").click(function () {
-		baru = '<div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control level" placeholder="Tingkat" name="level[]" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-4 col-md-3 col-lg-3"> <input type="text" class="form-control institute" placeholder="Nama Instansi" name="institute[]" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control entrance" placeholder="Tahun Masuk" name="entrance[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun masuk</i></span> </div> <div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control graduate" placeholder="Tahun Lulus" name="graduate[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun lulus</i></span> </div> <div class="form-group col-xs-12 col-sm-1 col-md-1 col-lg-1"> <button type="button" class="form-control btn btn-danger btn-flat btnhapus"><i class="fa fa-trash"></i> </button> <span class="help-block hidden-md hidden-lg"><i><br></i></span> </div> <div class="hidden-xs col-sm-1 col-md-2 col-lg-2"> <span class="form-control" style="border: none;"></span> <span class="help-block"><br></span> </div>';
-		$("#track_education").append(baru);
-	});
+	
     $("#job_record").on('click', '.btnhapuskerja', function(){
     	var index = $(".btnhapuskerja").index(this) + 1;    	
     	var index2 = index * 4;    	
@@ -202,16 +224,66 @@
     	$("#job_record").append(baru);
     });
 
-    $("#track_education").on('click', '.btnhapus', function(){
-    	var index = $(".btnhapus").index(this) + 1;    	
-    	var index2 = index * 6;    	
+    $("#track_education").on('click', '.btnhapus', function(){    	
+    	$.ajax({
+    		context:this,
+			type:"POST",
+			url:"{{ url('/alumni/hapussekolah') }}",
+			data:{
+				id:$(this).data('id')
+			},
+			beforeSend: function(){
+				$("#progress").modal('show');
+			},
+			success:function(data){
+				console.log(data);
+				$("#progress").modal('toggle');
+				var index = $(".btnhapus").index(this);
+				var index2 = index * 6;
+				var i = 0;
+				while(i < 6){
+					$("#track_education").find("div").eq(index2).remove();
+					++i;
+				}
+			},
+		    error: function(xhr, textStatus, errorThrown){
+		       alert('Terdapat kesalahan!');
+		       $("#progress").modal('toggle');
+		    }
+		});
+    });
 
-    	var i = 0;
-
-    	while(i < 6){
-    		$("#track_education").find("div").eq(index2).remove();
-    		++i;
-    	}
+    $("#track_education").on('click', '.btnsekolah', function(){
+		$.ajax({
+			context:this,
+			type:"POST",
+			url:"{{ url('/alumni/updatesekolah') }}",
+			data:{
+				level:$('.level').val(),
+				institute:$('.institute').val(),
+				entrance:$('.entrance').val(),
+				graduate:$('.graduate').val()				
+			},
+			beforeSend: function(){
+				$("#progress").modal('show');
+			},
+			success:function(data){
+				console.log(data);
+				$("#progress").modal('toggle');				
+				$('#track_education').find('button').attr('class','form-control btn btn-danger btn-flat btnhapus');
+				$('.btnhapus').find('i').attr('class','fa fa-trash');
+				$('.level').attr('class','form-control');
+				$('.institute').attr('class','form-control');
+				$('.entrance').attr('class','form-control');
+				$('.graduate').attr('class','form-control');
+				$("#track_education").append(baru);				
+			},
+		    error: function(data){
+		    	// var errors = data.responseText;
+		    	$("#progress").modal('toggle');
+		    	alert('Terjadi kesalahan pada input Anda');		       	
+		    }
+		});
     });
 
 	toastr.options = {

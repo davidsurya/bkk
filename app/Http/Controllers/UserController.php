@@ -28,7 +28,7 @@ class UserController extends Controller
     {
         $user = \Auth::user();
         
-        $education = $user->education()->first();
+        $education = $user->education()->get();
 
         $job = $user->job()->first();
 
@@ -38,7 +38,7 @@ class UserController extends Controller
 
         return view('user.edit', [
             'user' => $user,
-            'education' => $education,
+            'educations' => $education,
             'job' => $job,
             'departments' => $departments,
             'score' => $score,
@@ -333,5 +333,26 @@ class UserController extends Controller
             Auth::user()->score()->update($request->except(['_method','_token']));
 
         return redirect()->back();
+    }
+
+    public function postUpdatesekolah(Request $request)
+    {
+        $this->validate($request,[
+            'level' => 'required',
+            'institute' => 'required',
+            'entrance' => 'required|numeric',
+            'graduate' => 'required|numeric'
+        ]);
+
+        Auth::user()->education()->create($request->all());
+
+        return $request->all();
+    }
+
+    public function postHapussekolah(Request $request)
+    {
+        Auth::user()->education()->find($request->id)->delete();
+
+        return;
     }
 }
