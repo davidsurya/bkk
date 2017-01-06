@@ -17,11 +17,11 @@ class UserController extends Controller
 {
     use UserTrait;
 
-    protected $request;
+    protected $requests;
 
     public function __construct(Request $request)
     {
-        $this->request = $request;
+        $this->requests = $request;
     }
 
     public function getProfil()
@@ -42,7 +42,7 @@ class UserController extends Controller
             'job' => $job,
             'departments' => $departments,
             'score' => $score,
-            'url' => $this->request->path(),
+            'url' => $this->requests->path(),
         ]);
     }
 
@@ -97,7 +97,7 @@ class UserController extends Controller
         return view($view, [
             'informations' => $info,
             'recommends' => $recommend,
-            'url' => $this->request->path(),
+            'url' => $this->requests->path(),
             'id' => $id
         ]);         
     }

@@ -24,11 +24,11 @@ class AdminController extends Controller
 {
     use UserTrait;
 
-    protected $request;    
+    protected $requests;    
 
     public function __construct(Request $request)
     {
-        $this->request = $request;
+        $this->requests = $request;
     }  
 
     public function getIndex()
@@ -46,7 +46,7 @@ class AdminController extends Controller
             'information' => $information,
             'department' => $department,
             'industry' => $industry,
-            'url' => $this->request->path()
+            'url' => $this->requests->path()
         ]);
     }
 
@@ -66,7 +66,7 @@ class AdminController extends Controller
             'users' => $user,
             'roles' => $role,
             'studies' => $study,
-            'url' => $this->request->path(),
+            'url' => $this->requests->path(),
         ]);
     }
 
@@ -319,7 +319,7 @@ class AdminController extends Controller
 
         return view('program.index', [
             'prodis' => $prodi,
-            'url' => $this->request->path(),
+            'url' => $this->requests->path(),
         ]);
     }
 
@@ -375,7 +375,7 @@ class AdminController extends Controller
         
         return view('setting.maintenance', [
             'maintenance' => $maintenance,
-            'url' => $this->request->path(),
+            'url' => $this->requests->path(),
         ]);
     }
 
@@ -390,7 +390,7 @@ class AdminController extends Controller
         return view('industry.index', [
             'industries' => $industries,
             'no' => 1,
-            'url' => $this->request->path(),
+            'url' => $this->requests->path(),
         ]);
     }
 
@@ -433,7 +433,7 @@ class AdminController extends Controller
 
         return view('user.edit', [
             'user' => $user,
-            'url' => $this->request->path()
+            'url' => $this->requests->path()
         ]);
     }
 
@@ -463,7 +463,7 @@ class AdminController extends Controller
     /* Download Informasi dalam PDF*/
     public function getDownloadPdf($id)
     {
-        $user = new UserController($this->request);
+        $user = new UserController($this->requests);
 
         return $user->getDownloadPdf($id);
     }
@@ -471,7 +471,7 @@ class AdminController extends Controller
     /* Password Reset */
     public function putPasswordReset(Request $request)
     {
-        $user = new UserController($this->request);
+        $user = new UserController($this->requests);
 
         return $user->putPasswordReset($request);
     }
@@ -560,7 +560,7 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $usercontroller = new UserController($this->request);
+        $usercontroller = new UserController($this->requests);
 
         return $usercontroller->usercv($user);
     }
