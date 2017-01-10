@@ -30,7 +30,7 @@ class UserController extends Controller
         
         $education = $user->education()->get();
 
-        $job = $user->job()->first();
+        $job = $user->job()->get();
 
         $departments = \App\Department::all();
 
@@ -39,7 +39,7 @@ class UserController extends Controller
         return view('user.edit', [
             'user' => $user,
             'educations' => $education,
-            'job' => $job,
+            'jobs' => $job,
             'departments' => $departments,
             'score' => $score,
             'url' => $this->requests->path(),
@@ -221,60 +221,12 @@ class UserController extends Controller
         ]);        
     }
 
-    public function putUpdatecv(Request $request)
-    {
-        $levels = implode(',', $request->get('level'));
-        $institutes = implode(',', $request->get('institute'));
-        $entrances = implode(',', $request->get('entrance'));
-        $graduates = implode(',', $request->get('graduate'));
-
-        $user_education = Auth::user()->education()->get();
-
-        if ($user_education->isEmpty()) {
-            Auth::user()->education()->create([
-                'level' => $levels,
-                'institute' => $institutes,
-                'entrance' => $entrances,
-                'graduate' => $graduates
-            ]);            
-        }else{
-            Auth::user()->education()->update([
-                'level' => $levels,
-                'institute' => $institutes,
-                'entrance' => $entrances,
-                'graduate' => $graduates
-            ]);
-        }
-
-        $institutes = implode(',', $request->get('institute2'));
-        $entrances = implode(',', $request->get('entrance2'));
-        $graduates = implode(',', $request->get('graduate2'));
-
-        $user_job = Auth::user()->job()->get();
-
-        if ($user_job->isEmpty()) {
-            Auth::user()->job()->create([                
-                'institute' => $institutes,
-                'entrance' => $entrances,
-                'out' => $graduates
-            ]);            
-        }else{
-            Auth::user()->job()->update([                
-                'institute' => $institutes,
-                'entrance' => $entrances,
-                'out' => $graduates
-            ]);            
-        }
-        
-        return redirect()->back();        
-    }
-
     public function getDownloadCv()
     {
         $user = \Auth::user();
         
         return $this->usercv($user);
-    }
+    } 
 
     public function usercv($user)
     {
@@ -307,7 +259,8 @@ class UserController extends Controller
 
         $pdf->loadView('user.cv', array_merge(['user' => $user, 'score' => $score], $loadjob, $loadeducation));
 
-        return $pdf->download($user->name.'.pdf');        
+        return $pdf->download($user->name.'.pdf');
+        // return view('user.cv', array_merge(['user' => $user, 'score' => $score], $loadjob, $loadeducation));
     }
 
     public function putUpdatescore(Request $request)
@@ -344,14 +297,34 @@ class UserController extends Controller
             'graduate' => 'required|numeric'
         ]);
 
-        Auth::user()->education()->create($request->all());
+        $sekolah = Auth::user()->education()->create($request->all());
 
-        return $request->all();
+        return $sekolah->id;
     }
 
     public function postHapussekolah(Request $request)
     {
-        Auth::user()->education()->find($request->id)->delete();
+        Auth::user()->education()->findOrFail($request->id)->delete();
+
+        return;
+    }
+
+    public function postTambahkerja(Request $request)
+    {
+        $this->validate($request,[        
+            'institute' => 'required',
+            'entrance' => 'required|numeric',
+            'out' => 'required|numeric'
+        ]);
+
+        $job = Auth::user()->job()->create($request->all());
+
+        return $job->id;
+    }
+
+    public function postHapuskerja(Request $request)
+    {
+        Auth::user()->job()->findOrFail($request->id)->delete();
 
         return;
     }

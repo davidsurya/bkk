@@ -110,9 +110,7 @@ trait UserTrait {
             'name' => 'required',
             'email' => 'unique:industry,email,'.$id.'|email',
             'phone' => 'unique:industry,phone,'.$id.'|numeric',
-            'address' => 'required',
-            'lat' => 'numeric',
-            'lng' => 'numeric'
+            'address' => 'required'            
         ]);
     }
 }

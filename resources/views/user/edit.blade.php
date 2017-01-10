@@ -76,29 +76,30 @@
 			</div>
 			@if(Auth::user()->is('alumni'))
 			<div role="tabpanel" class="row tab-pane" id="cv">
-				<center><h4><b>Riwayat Pendidikan Formal</b></h4></center><br>
-				{!! Form::open(['method' => 'PUT', 'url' => '/alumni/updatecv']) !!}
+				<center><h4><b>Riwayat Pendidikan Formal</b></h4></center><br>				
 				<div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-2" id="track_education">
 					@if(!is_null($educations))
 					@foreach($educations as $education)
-						@include('user.partials.education')					
+						@include('user.partials.education')
 					@endforeach
 						@include('user.partials.education2')
 					@else
 						@include('user.partials.education2')													
-					@endif					
+					@endif
 				</div>
 
 				<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-lg-offset-2" id="job_record">
 					<hr>
 					<center><h4><b>Riwayat Pekerjaan</b></h4></center><br>
-					@include('user.partials.job')
-				</div>
-				<div class="form-group col-xs-offset-3 col-sm-offset-4 col-sm-4 col-md-offset-5">
-					<button type="submit" class="btn btn-success btn-flat">Update <i class="fa fa-save"></i></button>
-					<a href="{{ url('/') }}" class="btn btn-danger btn-flat">Batal</a>
-				</div>
-				{!! Form::close() !!}
+					@if(!is_null($jobs))
+					@foreach($jobs as $job)
+						@include('user.partials.job')
+					@endforeach
+						@include('user.partials.job2')
+					@else
+						@include('user.partials.job2')
+					@endif					
+				</div>							
 			</div>
 
 			<div role="tabpanel" class="row tab-pane" id="score">
@@ -177,6 +178,7 @@
 
 	var baru = '<div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control level" placeholder="Tingkat" name="level" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-4 col-md-3 col-lg-3"> <input type="text" class="form-control institute" placeholder="Nama Instansi" name="institute[]" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control entrance" placeholder="Tahun Masuk" name="entrance[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun masuk</i></span> </div> <div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control graduate" placeholder="Tahun Lulus" name="graduate[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun lulus</i></span> </div> <div class="form-group col-xs-12 col-sm-1 col-md-1 col-lg-1"> <button type="button" class="form-control btn btn-primary btn-flat btnsekolah"><i class="fa fa-plus"></i> </button> <span class="help-block hidden-md hidden-lg"><i><br></i></span> </div> <div class="hidden-xs col-sm-1 col-md-2 col-lg-2"> <span class="form-control" style="border: none;"></span> <span class="help-block"><br></span> </div>';
 
+	var baru_kerja = '<div class="form-group has-feedback col-xs-12 col-sm-4 col-md-5"> <input type="text" class="form-control institute2" placeholder="Nama Instansi" name="institute2" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-3 col-md-3"> <input type="text" class="form-control entrance2" placeholder="Tahun Masuk" name="entrance2" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun masuk</i></span> </div> <div class="form-group has-feedback col-xs-12 col-sm-3 col-md-3"> <input type="text" class="form-control graduate2" placeholder="Tahun Keluar" name="graduate2" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun keluar</i></span> </div> <div class="form-group col-xs-12 col-sm-1 col-md-1"> <button type="button" class="form-control btn btn-primary btn-flat btnkerja"><i class="fa fa-plus"></i> </button> </div>';
 	$('#image').change(function(){
 		var reader = new FileReader();			
 
@@ -207,22 +209,68 @@
 	});
 	$('#graduation option:first').attr('disabled', true);
 	
+	$("#job_record").on('click', '.btnkerja', function(){
+    	$.ajax({
+    		context:this,
+			type:"POST",
+			url:"{{ url('/alumni/tambahkerja') }}",
+			data:{
+				institute:$('.institute2').val(),
+				entrance:$('.entrance2').val(),
+				out:$('.graduate2').val()
+			},
+			beforeSend: function(){
+				$("#progress").modal('show');
+			},
+			success:function(data){
+				console.log(data);
+				$("#progress").modal('toggle');
+				$('.btnkerja').attr('data-id', data);
+				$('#job_record').find('button').attr('class','form-control btn btn-danger btn-flat btnhapuskerja');
+				$('.btnhapuskerja').find('i').attr('class','fa fa-trash');				
+				$('.institute2').attr('class','form-control');
+				$('.entrance2').attr('class','form-control');
+				$('.graduate2').attr('class','form-control');
+				$("#job_record").append(baru_kerja);
+			},
+		    error: function(xhr, textStatus, errorThrown){
+		       alert('Terjadi kesalahan pada input Anda');
+		       $("#progress").modal('toggle');
+		    }
+		});
+    });
+
     $("#job_record").on('click', '.btnhapuskerja', function(){
-    	var index = $(".btnhapuskerja").index(this) + 1;    	
-    	var index2 = index * 4;    	
+    	$.ajax({
+    		context:this,
+			type:"POST",
+			url:"{{ url('/alumni/hapuskerja') }}",
+			data:{
+				id:$(this).data('id')
+			},
+			beforeSend: function(){
+				$("#progress").modal('show');
+			},
+			success:function(data){
+				console.log(data);
+				$("#progress").modal('toggle');
+				var index = $(".btnhapuskerja").index(this);
+    			var index2 = index * 4;    	
 
-    	var i = 0;
+    			var i = 0;
 
-    	while(i < 4){
-    		$("#job_record").find("div").eq(index2).remove();
-    		++i;
-    	}
-    });
-
-    $(".btnkerja").click(function(){
-    	baru = '<div class="form-group has-feedback col-xs-12 col-sm-4 col-md-5"> <input type="text" class="form-control institute" placeholder="Nama Instansi" name="institute2[]" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-3 col-md-3"> <input type="text" class="form-control entrance" placeholder="Tahun Masuk" name="entrance2[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun masuk</i></span> </div> <div class="form-group has-feedback col-xs-12 col-sm-3 col-md-3"> <input type="text" class="form-control graduate" placeholder="Tahun Keluar" name="graduate2[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun keluar</i></span> </div> <div class="form-group col-xs-12 col-sm-1 col-md-1"> <button type="button" class="form-control btn btn-danger btn-flat btnhapuskerja"><i class="fa fa-trash"></i> </button></div>';
-    	$("#job_record").append(baru);
-    });
+    			while(i < 4){
+    				$("#job_record").find("div").eq(index2).remove();
+    				++i;
+				}
+				console.log(index2);				
+			},
+		    error: function(xhr, textStatus, errorThrown){
+		       alert('Terjadi kesalahan!!');
+		       $("#progress").modal('toggle');
+		    }
+		});
+    });    
 
     $("#track_education").on('click', '.btnhapus', function(){    	
     	$.ajax({
@@ -247,7 +295,7 @@
 				}
 			},
 		    error: function(xhr, textStatus, errorThrown){
-		       alert('Terdapat kesalahan!');
+		       alert('Terjadi kesalahan pada input Anda');
 		       $("#progress").modal('toggle');
 		    }
 		});
@@ -269,7 +317,8 @@
 			},
 			success:function(data){
 				console.log(data);
-				$("#progress").modal('toggle');				
+				$("#progress").modal('toggle');
+				$('.btnsekolah').attr('data-id', data);
 				$('#track_education').find('button').attr('class','form-control btn btn-danger btn-flat btnhapus');
 				$('.btnhapus').find('i').attr('class','fa fa-trash');
 				$('.level').attr('class','form-control');
@@ -278,8 +327,7 @@
 				$('.graduate').attr('class','form-control');
 				$("#track_education").append(baru);				
 			},
-		    error: function(data){
-		    	// var errors = data.responseText;
+		    error: function(data){		    	
 		    	$("#progress").modal('toggle');
 		    	alert('Terjadi kesalahan pada input Anda');		       	
 		    }

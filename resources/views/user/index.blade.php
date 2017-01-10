@@ -169,7 +169,7 @@
 			}
 		});
 
-		$('.edit').click(function(){
+		$('#table_id').on('click', '.edit', function(){
 			$('#editalumni').modal('show');
 			$('#username').val($(this).data('username'));
 			$('#name').val($(this).data('name'));
@@ -185,18 +185,18 @@
 			$('.frm').attr('action','{{ url('/admin/alumni') }}/'+$(this).data('id'));
 		});
 
-		$('.reset').click(function(){
+		$('#table_id').on('click', '.reset', function(){
 			$('#resetalumni').modal('show');
 			$('.nama b').html($(this).data('name'));
 			$('.frm').attr('action','{{ url('/admin/alumni-reset') }}/'+$(this).data('id'));
 		});
-		
-		$('.hapus').click(function(){
+
+		$('#table_id').on('click', '.hapus', function(){
 			$('#hapusalumni').modal('show');
 			$('.nama b').html($(this).data('name'));
 			$('.frm').attr('action', '{{ url('/admin/alumni') }}/'+$(this).data('id'));
 		});
-
+		
 		toastr.options = {
 			"closeButton": true,
 		}

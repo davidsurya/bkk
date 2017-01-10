@@ -38,7 +38,7 @@
 		<h4><u>CURICULUM VITAE</u></h4>		
 	</center>
 	<br>
-	<img src="{{ asset($user->img) }}" />
+	<img src="{{ asset($user->img) }}" width="100px" />
 	<br><br>
 	<table width="100%">
 		<tr>
