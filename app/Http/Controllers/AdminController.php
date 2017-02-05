@@ -185,7 +185,7 @@ class AdminController extends Controller
 
             session()->flash('msgError', 'Perusahaan belum terdaftar');
 
-            return redirect()->back();            
+            return redirect()->back();
         }
 
         $request['industry_id'] = $industry->id;
@@ -232,9 +232,22 @@ class AdminController extends Controller
     {
         if($request->get('save')){
         
+            $industry = Industry::select('id')->where('name', $request->get('industry_id'))->first();
+        
+            if(is_null($industry)){
+
+                session()->flash('msgError', 'Perusahaan belum terdaftar');
+
+                return redirect()->back();
+            }
+
+            $request['industry_id'] = $industry->id;
+        
             $requirement = implode(',', $request->get('requirement'));
 
             $request['requirement'] = $requirement;
+
+            $request['deadline'] = date('Y-m-d', strtotime($request->get('deadline')));
 
             Information::find($id)->update($request->all());
             

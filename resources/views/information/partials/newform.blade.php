@@ -42,7 +42,7 @@
 @endif
 
 <div class="form-group has-feedback {{ !empty($errors->first('deadline'))? "has-error": null }}">	
-	<input class="form-control flatpickr-input" id="flatpickr-dateline" placeholder="Batas Akhir" name="deadline" data-date-format="d-m-Y" readonly="false" data-min-date="today" data-default-date="{{ Form::getValueAttribute('deadline') }}">
+	<input class="form-control flatpickr-input" id="flatpickr-dateline" placeholder="Batas Akhir" name="deadline" data-date-format="Y-m-d" readonly="false" data-min-date="today" data-default-date="{{ Form::getValueAttribute('deadline') }}">
 	<span class="fa fa-calendar form-control-feedback"></span>
 	<span class="help-block">{{ $errors->first('deadline') }}</span>
 </div>

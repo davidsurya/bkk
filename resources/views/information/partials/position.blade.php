@@ -5,18 +5,18 @@
 </div>
 
 <div class="form-group has-feedback {{ !empty($errors->first('definition'))? "has-error": null }}">
-	<textarea type="text" class="form-control definition" placeholder="Gambaran untuk jabatan ini" name="definition" rows="4">{{ Form::getValueAttribute('definition') }}</textarea>
+	<textarea type="text" class="form-control definition" placeholder="Gambaran untuk jabatan ini" name="definition" rows="4" {{ !empty($position) && empty($status)? "disabled": null }}>{{ Form::getValueAttribute('definition') }}</textarea>
 	<span class="fa fa-file-text-o form-control-feedback"></span>
 	<span class="help-block">{{ $errors->first('definition') }}</span>
 </div>
 
 <div class="form-group has-feedback {{ !empty($errors->first('skill'))? "has-error":null }}">
-	<input type="text" class="form-control" data-role="tagsinput" placeholder="Keahlian" name="skill" value="{{ !empty($position)? $position->skill: null }}" {{ !empty($position) && empty($status)? "disabled": null }}>
+	<input type="text" class="form-control" data-role="tagsinput" placeholder="Keahlian" name="skill" value="{{ !empty($position)? $position->skill: null }}" {{ !empty($position) && empty($status)? "disabled": null }}/>
 	<span class="help-block">{{ $errors->first('skill') }}</span>
 </div>
 
 <div class="form-group has-feedback {{ !empty($errors->first('sex'))? "has-error":null }}">
-	<select class="form-control" name="sex">
+	<select class="form-control" name="sex" {{ !empty($position) && empty($status)? "disabled": null }}>
 		<option selected disabled>Jenis Kelamin</option>
 		<option value="L" {{ !empty($position) && $position->sex == "L" ? "selected": null }}>Laki-Laki</option>
 		<option value="P" {{ !empty($position) && $position->sex == "P" ? "selected": null }}>Perempuan</option>

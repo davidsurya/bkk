@@ -8,7 +8,7 @@
 
 @section('customheader')
 <link rel="stylesheet" type="text/css" href="{{ asset('/css/toastr.min.css') }}"/>
-<link rel="stylesheet" type="text/css" href="https://chmln.github.io/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('css/flatpickr.min.css') }}">
 <link rel="stylesheet" type="text/css" href="https://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.css">
 @stop
 
@@ -41,7 +41,7 @@
     </div>
 </div>
 @endforeach
-<button type="submit" class="btn btn-success btn-flat">Simpan <i class="glyphicon glyphicon-floppy-disk"></i></button>
+{{-- <button type="submit" class="btn btn-success btn-flat">Simpan <i class="glyphicon glyphicon-floppy-disk"></i></button> --}}
 {!! Form::close() !!}
 @endif
 
@@ -68,8 +68,8 @@
 
 @section('scripts')    
 @include('layouts.partials.scripts')	
-<script src="https://chmln.github.io/flatpickr/dist/flatpickr.js"></script>
-<script src="https://chmln.github.io/flatpickr/src/flatpickr.l10n.id.js"></script>
+<script type="text/javascript" src="{{ asset('/js/flatpickr.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/flatpickr.l10n.id.min.js') }}"></script>
 <script src="https://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
 <script type="text/javascript">
 	$(".btnsyarat").click(function () {	
@@ -94,9 +94,9 @@
         $("#nama b").html($(this).data('name'));
         $(".frm").attr('action', '{{ url('/admin/hapus-posisi/') }}/'+$(this).data('id'));
     });
-    $("#lanjut").click(function(){
+    /*$("#lanjut").click(function(){
         $("#perusahaan").val($('#countries option:selected').data('value'));        
-    });
+    });*/
     $(".flatpickr-input").flatpickr({
         allowInput: true            
     });
