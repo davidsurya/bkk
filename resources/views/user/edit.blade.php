@@ -179,6 +179,11 @@
 	var baru = '<div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control level" placeholder="Tingkat" name="level" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-4 col-md-3 col-lg-3"> <input type="text" class="form-control institute" placeholder="Nama Instansi" name="institute[]" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control entrance" placeholder="Tahun Masuk" name="entrance[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun masuk</i></span> </div> <div class="form-group has-feedback col-xs-12 col-sm-2 col-md-2 col-lg-2"> <input type="text" class="form-control graduate" placeholder="Tahun Lulus" name="graduate[]" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun lulus</i></span> </div> <div class="form-group col-xs-12 col-sm-1 col-md-1 col-lg-1"> <button type="button" class="form-control btn btn-primary btn-flat btnsekolah"><i class="fa fa-plus"></i> </button> <span class="help-block hidden-md hidden-lg"><i><br></i></span> </div> <div class="hidden-xs col-sm-1 col-md-2 col-lg-2"> <span class="form-control" style="border: none;"></span> <span class="help-block"><br></span> </div>';
 
 	var baru_kerja = '<div class="form-group has-feedback col-xs-12 col-sm-4 col-md-5"> <input type="text" class="form-control institute2" placeholder="Nama Instansi" name="institute2" /> </div> <div class="form-group has-feedback col-xs-12 col-sm-3 col-md-3"> <input type="text" class="form-control entrance2" placeholder="Tahun Masuk" name="entrance2" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun masuk</i></span> </div> <div class="form-group has-feedback col-xs-12 col-sm-3 col-md-3"> <input type="text" class="form-control graduate2" placeholder="Tahun Keluar" name="graduate2" /> <span class="help-block hidden-xs hidden-md hidden-lg"><i>Tahun keluar</i></span> </div> <div class="form-group col-xs-12 col-sm-1 col-md-1"> <button type="button" class="form-control btn btn-primary btn-flat btnkerja"><i class="fa fa-plus"></i> </button> </div>';
+
+	var editsekolah = '<div class="form-group col-xs-12 col-sm-1 col-md-1 col-lg-1"> <button type="button" class="form-control btn btn-success btn-flat btnedit"><i class="fa fa-edit"></i> </button> <span class="help-block hidden-md hidden-lg"><i><br></i></span> </div>';
+    
+    var editkerja = '<div class="form-group col-xs-12 col-sm-1 col-md-1"> <button type="button" class="form-control btn btn-flat btn-success btneditkerja"><i class="fa fa-edit"></i> </button> </div>';
+
 	$('#image').change(function(){
 		var reader = new FileReader();			
 
@@ -225,9 +230,13 @@
 			success:function(data){
 				console.log(data);
 				$("#progress").modal('toggle');
+				$(editkerja).insertBefore($('.btnkerja').parent());
+				$('.btneditkerja').eq($(".btneditkerja").length - 1).attr('data-id', data);
+				reseteditkerja();
 				$('.btnkerja').attr('data-id', data);
-				$('#job_record').find('button').attr('class','form-control btn btn-danger btn-flat btnhapuskerja');
-				$('.btnhapuskerja').find('i').attr('class','fa fa-trash');				
+				$('#job_record').find('.btnkerja').attr('class','form-control btn btn-danger btn-flat btnhapuskerja');
+				$('.btnhapuskerja').find('i').attr('class','fa fa-trash');
+				$('.institute2').parent().attr('class','form-group has-feedback col-xs-12 col-sm-4 col-md-4');
 				$('.institute2').attr('class','form-control');
 				$('.entrance2').attr('class','form-control');
 				$('.graduate2').attr('class','form-control');
@@ -238,6 +247,46 @@
 		       $("#progress").modal('toggle');
 		    }
 		});
+    });
+
+	$("#job_record").on('click', '.btneditkerja', function(){
+		if ($(this).find('i').attr('class') == 'fa fa-save') {
+			var index = $(".btneditkerja").index(this);
+    		var index2 = index * 3;
+    		$.ajax({
+	    		context:this,
+				type:"POST",
+				url:"{{ url('/alumni/ubahkerja') }}",
+				data:{
+					id:$(this).data('id'),					
+					institute:$("#job_record").find("input").eq(index2).val(),
+					entrance:$("#job_record").find("input").eq(index2+1).val(),
+					out:$("#job_record").find("input").eq(index2+2).val()
+				},
+				beforeSend: function(){
+					$("#progress").modal('show');
+				},
+				success:function(data){
+					$("#progress").modal('toggle');
+					reseteditkerja();
+				},
+			    error: function(xhr, textStatus, errorThrown){
+			       alert('Terjadi kesalahan!');
+			       $("#progress").modal('toggle');
+			    }
+			});
+		}else{
+			reseteditkerja();
+			var index = $(".btneditkerja").index(this);
+    		var index2 = index * 3;	
+    		var index3 = index2 + 3;
+			while(index2 < index3){
+				$("#job_record").find("input").eq(index2).removeAttr('disabled');
+				++index2;
+			}
+			$(this).attr('class', 'form-control btn btn-primary btn-flat btneditkerja');
+			$(this).find('i').attr('class', 'fa fa-save');
+		}
     });
 
     $("#job_record").on('click', '.btnhapuskerja', function(){
@@ -255,15 +304,14 @@
 				console.log(data);
 				$("#progress").modal('toggle');
 				var index = $(".btnhapuskerja").index(this);
-    			var index2 = index * 4;    	
+    			var index2 = index * 5;
 
     			var i = 0;
 
-    			while(i < 4){
+    			while(i < 5){
     				$("#job_record").find("div").eq(index2).remove();
     				++i;
-				}
-				console.log(index2);				
+				}					
 			},
 		    error: function(xhr, textStatus, errorThrown){
 		       alert('Terjadi kesalahan!!');
@@ -287,9 +335,9 @@
 				console.log(data);
 				$("#progress").modal('toggle');
 				var index = $(".btnhapus").index(this);
-				var index2 = index * 6;
+				var index2 = index * 7;
 				var i = 0;
-				while(i < 6){
+				while(i < 7){
 					$("#track_education").find("div").eq(index2).remove();
 					++i;
 				}
@@ -300,6 +348,77 @@
 		    }
 		});
     });
+
+    $("#track_education").on('click', '.btnedit', function(){
+    	if($(this).find('i').attr('class') == 'fa fa-save'){
+    		var index = $(".btnedit").index(this);
+    		var index2 = index * 4;
+    		$.ajax({
+	    		context:this,
+				type:"POST",
+				url:"{{ url('/alumni/ubahsekolah') }}",
+				data:{
+					id:$(this).data('id'),
+					level:$("#track_education").find("input").eq(index2).val(),
+					institute:$("#track_education").find("input").eq(index2+1).val(),
+					entrance:$("#track_education").find("input").eq(index2+2).val(),
+					graduate:$("#track_education").find("input").eq(index2+3).val()
+				},
+				beforeSend: function(){
+					$("#progress").modal('show');
+				},
+				success:function(data){
+					$("#progress").modal('toggle');
+					resetedit();
+				},
+			    error: function(xhr, textStatus, errorThrown){
+			       alert('Terjadi kesalahan!');
+			       $("#progress").modal('toggle');
+			    }
+			});
+    	}else{
+    		resetedit();
+    		var index = $(".btnedit").index(this);
+    		var index2 = index * 4;	
+    		var index3 = index2 + 4;
+			while(index2 < index3){
+				$("#track_education").find("input").eq(index2).removeAttr('disabled');
+				++index2;
+			}
+			$(this).attr('class', 'form-control btn btn-primary btn-flat btnedit');
+			$(this).find('i').attr('class', 'fa fa-save');
+    	}
+    });
+
+    function resetedit(){
+    	var i = 0;
+    	var j = $(".btnedit").length * 4;
+    	while(i < j){
+    		$("#track_education").find("input").eq(i).attr('disabled','disabled');
+    		++i;
+    	}
+    	i = 0;
+    	while(i < $(".btnedit").length){
+    		$(".btnedit").eq(i).attr('class', 'form-control btn btn-success btn-flat btnedit');
+    		$(".btnedit i").eq(i).attr('class', 'fa fa-edit');
+    		++i;
+    	}
+    }
+
+    function reseteditkerja(){
+    	var i = 0;
+    	var j = $(".btneditkerja").length * 3;
+    	while(i < j){
+    		$("#job_record").find("input").eq(i).attr('disabled','disabled');
+    		++i;
+    	}
+    	i = 0;
+    	while(i < $(".btneditkerja").length){
+    		$(".btneditkerja").eq(i).attr('class', 'form-control btn btn-success btn-flat btneditkerja');
+    		$(".btneditkerja i").eq(i).attr('class', 'fa fa-edit');
+    		++i;
+    	}
+    }    
 
     $("#track_education").on('click', '.btnsekolah', function(){
 		$.ajax({
@@ -318,11 +437,15 @@
 			success:function(data){
 				console.log(data);
 				$("#progress").modal('toggle');
+				$(editsekolah).insertBefore($('.btnsekolah').parent());
+				$('.btnedit').eq($(".btnedit").length - 1).attr('data-id', data);
+				resetedit();
 				$('.btnsekolah').attr('data-id', data);
-				$('#track_education').find('button').attr('class','form-control btn btn-danger btn-flat btnhapus');
-				$('.btnhapus').find('i').attr('class','fa fa-trash');
+				$('#track_education').find('.btnsekolah').attr('class','form-control btn btn-danger btn-flat btnhapus');
+				$('.btnhapus').find('i').attr('class','fa fa-trash');				
 				$('.level').attr('class','form-control');
-				$('.institute').attr('class','form-control');
+				$('.institute').parent().attr('class','form-group has-feedback col-xs-12 col-sm-3 col-md-3 col-lg-2');	
+				$('.institute').attr('class','form-control');				
 				$('.entrance').attr('class','form-control');
 				$('.graduate').attr('class','form-control');
 				$("#track_education").append(baru);				

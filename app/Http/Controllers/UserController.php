@@ -328,4 +328,18 @@ class UserController extends Controller
 
         return;
     }
+
+    public function postUbahsekolah(Request $request)
+    {
+        Auth::user()->education()->findOrFail($request->id)->update($request->all());
+
+        return;
+    }
+
+    public function postUbahkerja(Request $request)
+    {
+        Auth::user()->job()->findOrFail($request->id)->update($request->all());
+
+        return;
+    }
 }
