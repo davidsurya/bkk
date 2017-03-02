@@ -15,6 +15,6 @@
       user experience. Slimscroll is required when using the
       fixed layout. -->
 <script>
-	var pathname = window.location.pathname;
+	var pathname = window.location.href;	
 	$(".sidebar-menu > li > a[href='"+pathname+"'").parents().addClass('active');
 </script>

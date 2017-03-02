@@ -25,13 +25,22 @@ class HomeController extends Controller
      * @return Response
      */
     public function getIndex()
+    {                
+        return view('landing');
+    }
+
+    public function getDashboard()
     {
-        $user = Auth::user();
+        if(Auth::check()){
+            $user = Auth::user();
 
-        if($user->is('admin'))
-            return redirect('/admin');            
+            if($user->is('admin'))
+                return redirect('/admin');
+            elseif($user->is('alumni'))
+                return redirect('/alumni');
+        }
 
-        return redirect('/alumni');        
+        return redirect('/');
     }
 
     public function postRegister(UserRequest $request)

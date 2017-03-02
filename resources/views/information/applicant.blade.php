@@ -23,7 +23,7 @@
 	<div class="box-body">
 		<table id="table_id" class="table table-striped table-bordered" cellspacing="0">
 			<thead>
-				<tr>			
+				<tr>
 					<th>Nama</th>
 					<th>Email</th>					
 					<th>Telepon</th>
@@ -34,7 +34,7 @@
 			<tbody>
 				@foreach($information->applicant as $applicant)
 				<tr>
-					<td>{{ $applicant->name }}</td>
+					<td><a href="{{ url('/admin/cv/'.$applicant->id) }}" target="_blank">{{ $applicant->name }}</a></td>
 					<td>{{ $applicant->email }}</td>
 					<td>{{ $applicant->phone }}</td>
 					<td><a href="#" class="edit"				

@@ -1,0 +1,34 @@
+.btnlogin, .btnlogout{
+	background-color: indianred;
+	color: white;
+}
+.btnlogin:hover, .btnlogout:hover {
+	background-color: salmon;
+	color: white;
+}
+.btnprofil {
+	background-color: lightseagreen;
+	color: white;
+}
+.btnprofil:hover {
+	background-color: mediumaquamarine;
+	color: white;
+}
+.logo-mini, .logo-lg b{
+	color: salmon;
+}
+.skin-blue .main-header .navbar, .skin-blue .main-header li.user-header{
+	background-color: lightseagreen;	
+}
+.skin-blue .main-header .logo, .skin-blue .main-header .navbar .sidebar-toggle:hover{
+	background-color: darkcyan;
+}
+.skin-blue .main-header .logo:hover{
+	background-color: teal;
+}
+.skin-blue .sidebar-menu > li.active > a,.skin-blue .sidebar-menu > li > a:hover{
+	border-left-color: lightseagreen;
+}
+.skin-blue .sidebar-menu > li > a > i {
+	color: lightseagreen;
+}

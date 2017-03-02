@@ -63,7 +63,8 @@ ol li {
 				<p>{{ $informations->industry->name }}</p><br>
 
 				<h4><b>Deadline :</b></h4>
-				<p>{{ date('d F Y', strtotime($informations->deadline)) }}</p><br>
+				<?php $date = new Date($informations->deadline); ?>
+				<p>{{ $date->format('d F Y') }}</p><br>				
 
 				<h4><b>Gambaran Umum :</b></h4>
 				<p>{{ $informations->definition == null? "--":$informations->definition }}</p><br>
@@ -120,6 +121,25 @@ ol li {
 		</div>		
 	</div>
 
+	<div class="col-sm-4">
+		<div class="box box-warning">
+			<div class="box-header">
+				<i class="fa fa-list"></i>
+				<h3 class="box-title">Tentang Perusahaan</h3>
+			</div>
+			<div class="box-body">
+				<p>Nama : {{ $industry->name }}</p>
+				<p>Alamat : {{ $industry->address }}</p>
+				<p>Website : <a href="{{ $industry->website }}" target="_blank">{{ $industry->website }}</a></p>
+				@if($industry->email_published == 1)
+				<p>Email : <a href="mailto:{{ $industry->email }}">{{ $industry->email }}</a></p>
+				@endif
+				@if($industry->phone_published == 1)
+				<p>Telepon : {{ $industry->phone }}</p>
+				@endif
+			</div>
+		</div>
+	</div>
 	<div class="col-sm-4">
 		<div class="box box-warning">
 			<div class="box-header">

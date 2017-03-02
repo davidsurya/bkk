@@ -6,21 +6,46 @@
 
 @section('customheader')    
     {{-- <link rel="stylesheet" type="text/css" href="{{ asset('/css/flatpickr.min.css') }}"> --}}
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/flatpickr.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('css/flatpickr.min.css') }}">
+<style>
+    .bgimage{
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        z-index: -1;
+
+        /* Preserve aspet ratio */
+        min-width: 100%;
+        min-height: 100%;
+
+        /* filtering */
+        -moz-filter: blur(4px);
+        -webkit-filter: blur(4px);
+        filter: blur(4px);
+
+        -moz-filter: brightness(0.3);
+        -webkit-filter: brightness(0.3);
+        filter: brightness(0.3);
+    }
+</style>
 @stop
 
 @section('content')
-
-    <body class="hold-transition register-page">
-    <div class="register-box">
+<body class="hold-transition register-page">
+    <?php $bg = random_int(1, 4); ?>
+    <img src="{{ url('/image/static/'.$bg.'.jpg') }}" class="bgimage" />
+    <div class="register-box" style="margin-top: 5px;">
         <div class="register-logo">
             <a href="{{ url('/') }}">
-                <b>Bursa Kerja Khusus</b><br>
-                SMK N 2 Wonosari</a>
+                <img src="{{ asset('/image/static/logo.png') }}" width="40%" />
+            </a>
         </div>
 
-        <div class="register-box-body">
-            <p class="login-box-msg">Daftar anggota baru</p>
+        <div class="box-header" style="border-top-left-radius: 3px;border-top-right-radius: 3px;background-color: lightseagreen; color: white;">
+            <center><h4>BKK SMK N 2 Wonosari</h4></center>
+        </div>
+        
+        <div class="register-box-body">            
             <form action="{{ url('/register') }}" method="post" autocomplete="off">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="form-group has-feedback {{ !empty($errors->first('username'))? "has-error":null }}">
@@ -85,11 +110,11 @@
                     <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
                 </div>
                 <div class="row">
-                    <div class="col-xs-8">
-                        <a href="{{ url('/login') }}" class="text-center">Sudah punya akun. Login</a>
+                    <div class="col-xs-7">
+                        Sudah punya akun? <a href="{{ url('/login') }}" class="text-center">Login</a>
                     </div>                    
-                    <div class="col-xs-4 pull-right">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">Daftar</button>
+                    <div class="col-xs-5 pull-right">
+                        <button type="submit" class="btn btnlogin btn-block btn-flat">Daftar</button>
                     </div>
                 </div>
             </form>

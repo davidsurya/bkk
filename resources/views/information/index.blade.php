@@ -25,7 +25,8 @@ ol li {
 	<div class="box-header">
 		<i class="fa fa-list"></i>
 		<h3 class="box-title">{{ $information->title }}</h3>
-		<p><i>{{ $information->created_at->format('d F Y') }}</i> oleh <i>{{ $information->user->name }}</i></p>
+		<?php $date = new Date($information->created_at); ?>
+		<p><i>{{ $date->format('d F Y') }}</i> oleh <i>{{ $information->user->name }}</i></p>
 		<div class="box-tools pull-right">
 			<a href="{{ url('/admin/download-pdf/'.$information->id) }}">
 			<button class="btn btn-danger btn-flat">Download PDF <i class="fa fa-file-pdf-o"></i></button></a>
@@ -37,7 +38,8 @@ ol li {
 		<p>{{ $information->industry->name }}</p><br>
 
 		<p><b>Deadline :</b></p>
-		<p>{{ date('d F Y', strtotime($information->deadline)) }}</p><br>
+		<?php $date = new Date($information->deadline); ?>
+		<p>{{ $date->format('d F Y') }}</p><br>		
 
 		<p><b>Gambaran Umum :</b></p>
 		<p>{{ $information->definition == null? "--":$information->definition }}</p><br>

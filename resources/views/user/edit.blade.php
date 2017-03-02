@@ -14,21 +14,23 @@
 @stop
 
 @section('main-content')
-<div class="box box-warning">
-	<div class="box-header">
+{{-- <div class="box box-warning"> --}}
+	{{-- <div class="box-header"> --}}
+	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation" class="active"><a href="#profil" aria-controls="profil" role="tab" data-toggle="tab">Data Pribadi</a></li>
 			<li role="presentation"><a href="#password" aria-controls="password" role="tab" data-toggle="tab">Ubah Password</a></li>
 			@if(Auth::user()->is('alumni'))
 			<li role="presentation"><a href="#cv" aria-controls="cv" role="tab" data-toggle="tab">Curriculum Vitae</a></li>
 			<li role="presentation"><a href="#score" aria-controls="cv" role="tab" data-toggle="tab">Nilai</a></li>
-			<div class="form-group pull-right">					
+			{{-- <div class="form-group pull-right">					
 				<a href="{{ url('/alumni/download-cv') }}" class="btn btn-danger btn-flat">Download CV <i class="fa fa-file-pdf-o"></i></a>
-			</div>
+			</div> --}}
+			<li class="pull-right">
+				<a href="{{ url('/alumni/download-cv') }}" class="btn bg-red btn-flat">Download CV <i class="fa fa-file-pdf-o"></i></a>
+			</li>
 			@endif
 		</ul>
-	</div>
-	<div class="box-body register-box-body">		
 		<div class="tab-content">
 			<div role="tabpanel" class="tab-pane active" id="profil">				
 				@if(Auth::user()->is('admin'))
@@ -50,7 +52,7 @@
 				</div>				
 				{!! Form::close() !!}				
 			</div>
-			<div role="tabpanel" class="tab-pane" id="password">
+			<div role="tabpanel" class="row tab-pane" id="password">
 				@if(Auth::user()->is('admin'))
 				{!! Form::open(['method' => 'PUT', 'url' => '/admin/password-reset']) !!}
 				@else
@@ -80,11 +82,11 @@
 				<div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-2" id="track_education">
 					@if(!is_null($educations))
 					@foreach($educations as $education)
-						@include('user.partials.education')
+					@include('user.partials.education')
 					@endforeach
-						@include('user.partials.education2')
+					@include('user.partials.education2')
 					@else
-						@include('user.partials.education2')													
+					@include('user.partials.education2')													
 					@endif
 				</div>
 
@@ -93,15 +95,14 @@
 					<center><h4><b>Riwayat Pekerjaan</b></h4></center><br>
 					@if(!is_null($jobs))
 					@foreach($jobs as $job)
-						@include('user.partials.job')
+					@include('user.partials.job')
 					@endforeach
-						@include('user.partials.job2')
+					@include('user.partials.job2')
 					@else
-						@include('user.partials.job2')
+					@include('user.partials.job2')
 					@endif					
 				</div>							
 			</div>
-
 			<div role="tabpanel" class="row tab-pane" id="score">
 				<center><h4><b>Daftar Nilai</b></h4></center><br>
 				{!! Form::open(['method' => 'PUT', 'url' => '/alumni/updatescore']) !!}
@@ -140,13 +141,17 @@
 						<button type="submit" class="btn btn-flat btn-success">Update <i class="fa fa-save"></i></button>
 						<a href="{{ url('/alumni/profil') }}" class="btn btn-flat btn-danger">Batal</a>
 					</div>
-				{!! Form::close() !!}
+					{!! Form::close() !!}
 				</div>				
 			</div>
 			@endif
 		</div>
 	</div>
-</div>
+	{{-- </div> --}}
+	{{-- <div class="box-body register-box-body">		 --}}
+		
+	{{-- </div> --}}
+{{-- </div> --}}
 
 <div id="progress" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" style="padding-top:15%;">
 	<div class="modal-dialog modal-sm">

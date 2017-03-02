@@ -35,7 +35,7 @@
             <!-- Optionally, you can add icons to the links -->
             @if(Auth::check())
                 @if(Auth::user()->is('admin'))
-                <li><a href="{{ url('/') }}"><i class='fa fa-home'></i> <span>Beranda</span></a></li>
+                <li><a href="{{ url('/admin') }}"><i class='fa fa-home'></i> <span>Beranda</span></a></li>
                 <li><a href="{{ url('/admin/alumni') }}"><i class='fa fa-user'></i> <span>Manajemen Alumni</span></a></li>
                 <li><a href="{{ url('/admin/informasi') }}"><i class='fa fa-info'></i> <span>Manajemen Informasi</span></a></li>
                 <li><a href="{{ url('/admin/tenaga-kerja') }}"><i class='fa fa-users'></i> <span>Keterserapan Tenaga Kerja</span></a></li>
@@ -43,7 +43,9 @@
                 <li><a href="{{ url('/admin/industri') }}"><i class='fa fa-industry'></i> <span>Manajemen Industri</span></a></li>
                 <li><a href="{{ url('/admin/pengaturan') }}"><i class='fa fa-cog'></i> <span>Pengaturan</span></a></li>
                 @else
-                <li><a href="{{ url('/alumni/informasi') }}"><i class='fa fa-info'></i> <span>Informasi</span></a></li>
+                <li><a href="{{ url('/alumni') }}"><i class='fa fa-home'></i> <span>Beranda</span></a></li>
+                <li><a href="{{ url('/alumni/pemberitahuan') }}"><i class='fa fa-bell'></i><span>Pemberitahuan </span> <span class="label bg-red pull-right">{{ App\Http\Controllers\UserController::notifCount() }}</span></a></li>
+                <li><a href="{{ url('/alumni/lamar') }}"><i class='fa fa-hand-o-up'></i> <span>Lamaran Saya</span></a></li>
                 @endif
             @endif     
         </ul><!-- /.sidebar-menu -->       

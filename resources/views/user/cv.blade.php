@@ -76,32 +76,30 @@
 		</tr>
 	</table>
 	<br>
-	@if(isset($level))
+
+	<!-- Riwayat pendidikan-->
 	<table width="100%">
 		<tr>
 			<th>Riwayat Pendidikan :</th>
 		</tr>	
 	</table>
-
 	<table width="100%" border="2px">
 		<tr>			
-			<?php $jml = count($level); $i = 0; ?>
 			<th>Tingkat</th>
 			<th>Nama Institusi</th>
 			<th>Waktu / Tahun</th>
-			@while($i < $jml)
+			@foreach($educations as $education)
 			<tr>
-				<td>{{ $level[$i] }}</td>
-				<td>{{ $institute[$i] }}</td>
-				<td>{{ $entrance[$i] }} - {{ $graduate[$i] }}</td>
-			</tr>
-			<?php $i++; ?>
-			@endwhile
+				<td>{{ $education->level }}</td>
+				<td>{{ $education->institute }}</td>
+				<td>{{ $education->entrance }} - {{ $education->graduate }}</td>
+			</tr>			
+			@endforeach
 		</tr>
-	</table>
-	@endif
+	</table>	
 	<br>
-	@if(isset($institutejob))
+
+	<!-- Riwayat kerja-->
 	<table width="100%">
 		<tr>
 			<th>Pengalaman Kerja :</th>
@@ -109,19 +107,16 @@
 	</table>
 
 	<table width="100%" border="2px">
-		<tr>			
-			<?php $jml = count($institutejob); $i = 0; ?>			
+		<tr>						
 			<th>Nama Institusi</th>
 			<th>Waktu / Tahun</th>
-			@while($i < $jml)
+			@foreach($jobs as $job)
 			<tr>					
-				<td>{{ $institutejob[$i] }}</td>
-				<td>{{ $entrancejob[$i] }} - {{ $graduatejob[$i] }}</td>
-			</tr>
-			<?php $i++; ?>
-			@endwhile
+				<td>{{ $job->institute }}</td>
+				<td>{{ $job->entrance }} - {{ $job->out }}</td>
+			</tr>			
+			@endforeach
 		</tr>
-	</table>
-	@endif
+	</table>	
 </body>
 </html>

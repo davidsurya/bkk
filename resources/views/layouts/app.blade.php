@@ -29,7 +29,8 @@ desired effect
 |---------------------------------------------------------|
 -->
 @if(Auth::check())
-<body class="skin-blue {{ Auth::user()->is('Admin')? "fixed":"sidebar-collapse" }}">
+{{-- <body class="skin-blue {{ Auth::user()->is('Admin')? "fixed":"sidebar-collapse" }}"> --}}
+<body class="skin-blue sidebar-mini">
 @endif
 <div class="wrapper">
 

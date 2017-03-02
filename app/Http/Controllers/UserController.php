@@ -74,6 +74,8 @@ class UserController extends Controller
 
     public function getInformasi($id = null)
     {        
+        $recommend = $this->RekomendasiInformasi();
+
         if($id != null)
         {
             $info = Information::findOrFail($id);
@@ -84,19 +86,21 @@ class UserController extends Controller
                 'read' => $read + 1
             ]);
 
-            $view = 'information.user.detail';
+            $industry = Information::find($id)->industry()->first();            
+
+            $view = 'information.user.detail';            
         }else{
             $info = Information::where('hidden', 0)
                 ->latest('created_at')                
                 ->paginate(15);
             $view = 'information.user.index';
+            $industry = null;
         }        
-
-        $recommend = $this->RekomendasiInformasi();
-
+        
         return view($view, [
             'informations' => $info,
             'recommends' => $recommend,
+            $industry == null? :'industry' => $industry,
             'url' => $this->requests->path(),
             'id' => $id
         ]);         
@@ -230,37 +234,27 @@ class UserController extends Controller
 
     public function usercv($user)
     {
-        $education = $user->education()->first();
-        $job = $user->job()->first();
+        $education = $user->education()->get();
+        $job = $user->job()->get();
         $score = $user->score()->first();
 
         $pdf = \App::make('dompdf.wrapper');
+        
 
-        if(isset($job)){
-            $loadjob = [
-                'institutejob' => explode(',', $job->institute),
-                'entrancejob' => explode(',', $job->entrance),
-                'graduatejob' => explode(',', $job->out)
-            ];
-        }else{
-            $loadjob = [];
-        }
-
-        if(isset($education)){
-            $loadeducation = [
-                'level' => explode(',', $education->level),
-                'institute' => explode(',', $education->institute),
-                'entrance' => explode(',', $education->entrance),
-                'graduate' => explode(',', $education->graduate),
-            ];
-        }else{
-            $loadeducation = [];
-        }               
-
-        $pdf->loadView('user.cv', array_merge(['user' => $user, 'score' => $score], $loadjob, $loadeducation));
+        $pdf->loadView('user.cv', [
+            'user' => $user,
+            'educations' => $education,
+            'jobs' => $job,
+            'scores' => $score
+        ]);
 
         return $pdf->download($user->name.'.pdf');
-        // return view('user.cv', array_merge(['user' => $user, 'score' => $score], $loadjob, $loadeducation));
+        /*return view('user.cv', [
+            'user' => $user,
+            'educations' => $education,
+            'jobs' => $job,
+            'scores' => $score
+        ]);*/
     }
 
     public function putUpdatescore(Request $request)
@@ -341,5 +335,57 @@ class UserController extends Controller
         Auth::user()->job()->findOrFail($request->id)->update($request->all());
 
         return;
+    }
+
+    public function getPemberitahuan($param = null)
+    {        
+        if($param == 'semua'){
+            $notif = Auth::user()->applicant()
+                            ->where('status', '!=', 'Menunggu')
+                            ->with(['industry'=>function($query){
+                                $query->select('id','name');
+                            }])->get();
+        }else{
+            $notif = Auth::user()->applicant()
+                            ->where('status', '!=', 'Menunggu')
+                            ->wherePivot('read', 0)
+                            ->with(['industry'=>function($query){
+                                $query->select('id','name');
+                            }])->get();
+        }
+
+        $applicants = Auth::user()->applicant()->wherePivot('read', 0)->get();
+
+        foreach ($applicants as $applicant) {
+            $applicant->pivot->timestamps = false;
+            $applicant->pivot->update(['read' => 1]);
+        }
+
+        return view('user.notification', ['notifs'=>$notif,'param'=>$param,'url' => $this->requests->path()]);
+    }
+
+    public static function notifCount()
+    {
+        $notif = Auth::user()->applicant()
+                            ->where('status', '!=', 'Menunggu')
+                            ->wherePivot('read', 0)
+                            ->get(['id']);
+
+        return count($notif);
+    }
+
+    public function getKonfirmasi($id)
+    {
+        $information = Information::findOrFail($id);
+        Auth::user()->applicant()->updateExistingPivot($information->id, ['confirm' => 1]);
+
+        return redirect()->back();
+    }
+
+    public function getTolak($id)
+    {
+        $information = Information::findOrFail($id);
+        Auth::user()->applicant()->updateExistingPivot($information->id, ['confirm' => 2]);   
+        return redirect()->back();
     }
 }

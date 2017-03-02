@@ -52,9 +52,9 @@ class User extends Authenticatable
     public function applicant()
     {
         return $this->belongsToMany('App\Information', 'applicant_user', 'user_id', 'information_id')
-                    ->select(array('title'))
-                    ->withPivot('status')
-                    ->withTimestamps();
+                    ->select(array('industry_id','title'))
+                    ->withPivot('status','confirm')                    
+                    ->withTimestamps();                    
     }
 
     public function education()

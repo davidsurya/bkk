@@ -529,11 +529,11 @@ class AdminController extends Controller
             $user = User::join('applicant_user', 'users.id', '=', 'applicant_user.user_id')
                     ->whereBetween('applicant_user.updated_at', [$date_start, $date_end])
                     ->where('applicant_user.status', 'Diterima')
-                    ->get(['users.name', 'users.email', 'users.phone', 'applicant_user.status', 'applicant_user.updated_at as accepted']);
+                    ->get(['users.id','users.name', 'users.email', 'users.phone', 'applicant_user.status', 'applicant_user.updated_at as accepted']);
         }else{
             $user = User::join('applicant_user', 'users.id', '=', 'applicant_user.user_id')                    
                     ->where('applicant_user.status', 'Diterima')
-                    ->get(['users.name', 'users.email', 'users.phone', 'applicant_user.status', 'applicant_user.updated_at as accepted']);
+                    ->get(['users.id','users.name', 'users.email', 'users.phone', 'applicant_user.status', 'applicant_user.updated_at as accepted']);
         }
 
         return view('employer.index',[
@@ -548,7 +548,7 @@ class AdminController extends Controller
 
         $status = $request->get('value');
 
-        $user->applicant()->updateExistingPivot($id, ['status' => $status]);
+        $user->applicant()->updateExistingPivot($id, ['status' => $status,'read' => 0]);
 
         return redirect()->back();        
     }

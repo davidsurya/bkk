@@ -30,8 +30,9 @@
 					<tbody>
 						@foreach($proposals as $proposal)
 						<tr>
-							<td>{{ $proposal->title }}</td>							
-							<td>{{ date('d F Y', strtotime($proposal->pivot->created_at)) }}</td>
+							<td>{{ $proposal->title }}</td>
+							<?php $date = new Date($proposal->pivot->created_at); ?>						
+							<td>{{ $date->format('d F Y') }}</td>
 							<td>{{ $proposal->pivot->status }}</td>							
 						</tr>
 						@endforeach

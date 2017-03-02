@@ -2,31 +2,29 @@
 <header class="main-header">
 
     <!-- Logo -->    
-    <a href="{{ url('/') }}" class="logo">
+    <a href="{{ url('/') }}" class="logo" target="_blank">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini"><b>BKK</b></span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>Dashboard</b> BKK </span>
+        <span class="logo-lg">Halaman Utama <b>BKK</b> </span>
     </a>    
 
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
-        @if(Auth::check())
-        @if(Auth::user()->is('Admin'))
+        @if(Auth::check())        
         <!-- Sidebar toggle button-->
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
-        </a>
-        @endif
+        </a>        
         @endif
 
         <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
             @if(Auth::check())
-                @if(Auth::user()->is('alumni'))
+                {{-- @if(Auth::user()->is('alumni'))
                     <li><a href="{{ url('/alumni/lamar') }}">Lamaran Saya <i class="fa fa-hand-o-up"></i></a></li>
-                @endif
+                @endif --}}
 
                 @if(Auth::user()->is('Admin'))
                 <!-- Messages: style can be found in dropdown.less-->
@@ -67,13 +65,13 @@
                             <li class="user-footer">
                                 <div class="pull-left">
                                     @if(Auth::user()->is('admin'))
-                                        <a href="{{ url('/admin/profil') }}" class="btn btn-default btn-flat">Profil</a>
+                                        <a href="{{ url('/admin/profil') }}" class="btn btnprofil btn-flat">Profil <span class="fa fa-user"></span></a>
                                     @else
-                                        <a href="{{ url('/alumni/profil') }}" class="btn btn-default btn-flat">Profil</a>
+                                        <a href="{{ url('/alumni/profil') }}" class="btn btnprofil btn-flat">Profil <span class="fa fa-user"></span></a>
                                     @endif
                                 </div>
                                 <div class="pull-right">
-                                    <a href="{{ url('/logout') }}" class="btn btn-default btn-flat">Keluar</a>
+                                    <a href="{{ url('/logout') }}" class="btn btn-flat btnlogout">Keluar <span class="fa fa-sign-out"></span></a>
                                 </div>
                             </li>
                         </ul>

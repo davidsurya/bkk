@@ -23,11 +23,12 @@ Route::get('/admin/up', function() {
 	@unlink(storage_path().'/framework/down');
 });
 
+Route::get('/', 'HomeController@getIndex');
+Route::get('/dashboard', 'HomeController@getDashboard');
+
 Route::auth();
 
-Route::group(array('middleware'=>'auth'), function(){
-
-	Route::get('/', 'HomeController@getIndex');
+Route::group(array('middleware'=>'auth'), function(){	
 
 	Route::group(array('middleware'=>'role:admin'), function(){
 		Route::controller('/admin', 'AdminController');
